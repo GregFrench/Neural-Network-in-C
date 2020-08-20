@@ -59,21 +59,25 @@ Network * init(int sizes[], int size) {
   return 0;
 } */
 
-/* int feedforward(Network * net, a) {
-  int i;
-  double a, b, w;
+double ** feedforward(Network * net, int a) {
+  double ** result = malloc(sizeof(double) * 4);
+  double ** weights = net->weights[0];
+  double ** biases = net->biases[0];
+  double ** dot = dotMatrixByScalar(weights, a);
+  int i = 0;
+  int j = 0;
 
-  for (i = 0; i < net->weights.length; i++) {
-    b = net->weights[i];
-    w = net->biases[i];
+  result[0] = malloc(sizeof(double) * 2);
+  result[1] = malloc(sizeof(double) * 2);
 
-    a = sigmoid(dot(w, a) + b);
+  for (i = 0; i < 2; i++) {
+    for (j = 0; j < 2; j++) {
+      result[i][j] = sigmoid(dot[i][j] + biases[i][0]);
+    }
   }
-  for b, w in zip(self.biases, self.weights) {
-  }
 
-  return a;
-} */
+  return result;
+}
 
 /* void free_network(Network * net) {
   int i = 0;

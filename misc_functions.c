@@ -30,6 +30,24 @@ int is_approx(double x, double y) {
   return fabs(x - y) < EPSILON;
 }
 
+double ** dotMatrixByScalar(double ** matrix, int scalar) {
+  double ** result = malloc(sizeof(double) * 2);
+  int i = 0;
+  int j = 0;
+
+  for (i = 0; i < 2; i++) {
+    result[i] = malloc(sizeof(double) * 2);
+
+    for (j = 0; j < 2; j++) {
+      result[i][j] = matrix[i][j] * scalar;
+    }
+  }
+
+
+
+  return result;
+}
+
 /* Similar to the numpy np.random.randn(x, y) function using two parameters */
 double ** randn(int x, int y) {
   int i = 0;

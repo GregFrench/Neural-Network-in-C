@@ -4,6 +4,7 @@
 #define PI 3.14159265358979323846
 
 double box_muller();
+double ** dotMatrixByScalar(double ** matrix, int scalar);
 int is_approx(double x, double y);
 double ** randn(int x, int y);
 double rand_double(double a, double b);

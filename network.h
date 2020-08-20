@@ -20,6 +20,7 @@ mnist_data * mnist_loader(char * type);
 #define TEST_SET_SIZE 10000
 
 Network * init(int sizes[], int size);
+double ** feedforward(Network * net, int a);
 void sgd(Network * net, mnist_data * trainingData, int trainingDataSize, int epochs, int miniBatchSize, double eta, mnist_data * testData, int testDataSize);
 void update_mini_batch(Network * net, double **** mini_batch, double eta);
 

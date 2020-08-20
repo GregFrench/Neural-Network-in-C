@@ -2,4 +2,5 @@
 
 Run tests:
 make all && cd test && make all && cd ..
-test/solution_test
+test/network_test
+test/misc_functions_test

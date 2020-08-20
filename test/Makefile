@@ -1,13 +1,19 @@
 CC = gcc
 CFLAGS = -ansi -Wall
 
-solution_test: solution_test.o ../solution.o
-	$(CC) $(CFLAGS) -o solution_test solution_test.o ../solution.o -lm
+network_test: network_test.o ../network.o ../misc_functions.o
+	$(CC) $(CFLAGS) -o network_test network_test.o ../network.o ../misc_functions.o -lm
 
-solution_test.o: solution_test.c
-	$(CC) $(CFLAGS) -c solution_test.c
+network_test.o: network_test.c
+	$(CC) $(CFLAGS) -c network_test.c
 
-all: solution_test
+misc_functions_test: misc_functions_test.o ../misc_functions.o
+	$(CC) $(CFLAGS) -o misc_functions_test misc_functions_test.o ../misc_functions.o -lm
+
+misc_functions_test.o: misc_functions_test.c
+	$(CC) $(CFLAGS) -c misc_functions_test.c
+
+all: network_test misc_functions_test
 
 clean:
-	rm solution_test solution_test.o
+	rm network_test network_test.o misc_functions_test misc_functions_test.o

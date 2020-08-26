@@ -8,6 +8,11 @@ typedef struct {
   int trainingDataSize;
 } Network;
 
+typedef struct {
+  double *** nabla_b;
+  double *** nabla_w;
+} nabla_tuple;
+
 #define MNIST_DATA_TYPE double
 
 typedef struct mnist_data {
@@ -20,12 +25,14 @@ mnist_data * mnist_loader(char * type);
 #define TEST_SET_SIZE 10000
 
 Network * init(int sizes[], int size);
+nabla_tuple * backprop(Network * net, int ** x, int ** y);
 double ** feedforward(Network * net, int a);
+void free_network(Network * net);
+void free_nabla_tuple(nabla_tuple * tuple);
 void sgd(Network * net, mnist_data * trainingData, int trainingDataSize, int epochs, int miniBatchSize, double eta, mnist_data * testData, int testDataSize);
 void update_mini_batch(Network * net, double **** mini_batch, double eta);
 
 /*
 int evaluate(double **** test_data);
-void free_network(Network * net);
 double *** setGradientVector(Network * net);
 */

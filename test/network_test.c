@@ -8,9 +8,6 @@
 
 int tests_run = 0;
 
-int foo = 7;
-int bar = 4;
-
 double *** set_biases_test(int sizes[], int size) {
   double *** biases = malloc(sizeof(double) * (size - 1));
   int i = 0;
@@ -23,6 +20,8 @@ double *** set_biases_test(int sizes[], int size) {
   
   biases[0][0][0] = 0.49671415;
   biases[0][1][0] = -0.1382643;
+  biases[1][0][0] = 0.64768854;
+  biases[1][1][0] = 1.52302986;
 
   return biases;
 }
@@ -49,10 +48,25 @@ double *** set_weights_test(int sizes[], int size) {
     weights[0][i] = malloc(sizeof(double) * 2);
   }
 
-  weights[0][0][0] = 0.64768854;
-  weights[0][0][1] = 1.52302986;
-  weights[0][1][0] = -0.23415337;
-  weights[0][1][1] = -0.23413696;
+  weights[0][0][0] = -0.23415337;
+  weights[0][0][1] = -0.23413696;
+  weights[0][0][2] = 1.57921282;
+  weights[0][0][3] = 0.76743473;
+
+  weights[0][1][0] = -0.46947439;
+  weights[0][1][1] = 0.54256004;
+  weights[0][1][2] = -0.46341769;
+  weights[0][1][3] = -0.46572975;
+
+  weights[1][0][0] = 0.24196227;
+  weights[1][0][1] = -1.91328024;
+  weights[1][1][0] = -1.72491783;
+  weights[1][1][1] = -0.56228753;
+
+  /*weights:
+[array([[-0.23415337, -0.23413696,  1.57921282,  0.76743473],
+       [-0.46947439,  0.54256004, -0.46341769, -0.46572975]]), array([[ 0.24196227, -1.91328024],
+       [-1.72491783, -0.56228753]])]*/
 
   return weights;
 }
@@ -77,11 +91,67 @@ static char * testFeedForwardReturnsCorrectOutput() {
   mu_assert("error, feedForward doesn't return correct output for output[0][1]", is_approx(output[0][1], 0.97188062) == 1);
   mu_assert("error, feedForward doesn't return correct output for output[1][0]", is_approx(output[1][0], 0.35284178) == 1);
   mu_assert("error, feedForward doesn't return correct output for output[1][1]", is_approx(output[1][1], 0.35284928) == 1);
+
+  free_network(net);
+  return 0;
+}
+
+static char * testBackpropReturnsCorrectOutput() {
+  Network * net = malloc(sizeof(Network));
+  nabla_tuple * output;
+  int sizes[] = {4, 2, 2};
+  int size = 3;
+  int x_data[] = {1, 2, 3, 4};
+  int y_data[] = {0, 1};
+  int ** x;
+  int ** y;
+  char str[100];
+
+  double nabla_b[2][2][1] = {
+    {
+      { 0.00013637 },
+      { -0.01133838 }
+    }, {
+      { 0.14780199 },
+      { -0.13766564 }
+    }
+  };
+
+  double nabla_w[2][2][4] = {
+    {
+      { 0.00013637,  0.00027274,  0.00040912,  0.00054549 },
+      { -0.01133838, -0.02267675, -0.03401513, -0.0453535 }
+    }, {
+      { 0.14772818, 0.00866807 },
+      { -0.13759689, -0.00807361 }
+    }
+  };
+
+  net->numLayers = size;
+  net->sizes = set_sizes_test(sizes, size);
+  /*net->biases = set_biases_test(sizes, size);
+  net->weights = set_weights_test(sizes, size);*/
+  net->trainingDataSize = 0;
+  net->testDataSize = 0;
+  net->miniBatchSize = 0;
+  
+  output = backprop(net, x, y);
+
+  mu_assert("error, backprop doesn't return correct output for nabla_b[0][0][0]", is_approx(output->nabla_b[0][0][0], 0.00013637) == 1);
+  /*mu_assert("error, backprop doesn't return correct output for nabla_b[0][1][0]", is_approx(output->nabla_b[0][1][0], -0.01133838) == 1);*/
+
+  free_network(net);
+  free_nabla_tuple(output);
+
+  /*free(x);
+  free(y);*/
   return 0;
 }
 
 static char * all_tests() {
-  mu_run_test(testFeedForwardReturnsCorrectOutput);
+  /*mu_run_test(testFeedForwardReturnsCorrectOutput);*/
+  mu_run_test(testBackpropReturnsCorrectOutput);
+
   return 0;
 }
 

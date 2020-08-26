@@ -18,10 +18,42 @@ Network * init(int sizes[], int size) {
   return net;
 }
 
-/* double **** backprop(Network * net, x, y) {
-  nabla_b = [np.zeros(b.shape) for b in net->biases];
-  nabla_w = [np.zeros(w.shape) for w in net->weights];
+nabla_tuple * backprop(Network * net, int ** x, int ** y) {
+  nabla_tuple * tuple = malloc(sizeof(nabla_tuple));
+  int i = 0;
+  int j = 0;
+  int k = 0;
 
+  tuple->nabla_b = malloc(sizeof(double) * 2);
+
+  for (i = 0; i < 2; i++) {
+    tuple->nabla_b[i] = malloc(sizeof(double) * 2);
+
+    for (j = 0; j < 2; j++) {
+      tuple->nabla_b[i][j] = malloc(sizeof(double) * 1);
+
+      for (k = 0; k < 1; k++) {
+        tuple->nabla_b[i][j][k] = 0.00;
+      }
+    }
+  }
+
+  tuple->nabla_w = malloc(sizeof(double) * 2);
+
+  for (i = 0; i < 2; i++) {
+    tuple->nabla_w[i] = malloc(sizeof(double) * 2);
+
+    for (j = 0; j < 2; j++) {
+      tuple->nabla_w[i][j] = malloc(sizeof(double) * 4);
+
+      for (k = 0; k < 4; k++) {
+        tuple->nabla_w[i][j][k] = 0.00;
+      }
+    }
+  }
+
+  return tuple;
+  /*
   activation = x;
   activations = [x];
   zs = [];
@@ -45,8 +77,8 @@ Network * init(int sizes[], int size) {
     nabla_w[-l] = np.dot(delta, activations[-l-1].transpose());
   }
 
-  return (nabla_b, nabla_w);
-} */
+  return (nabla_b, nabla_w);*/
+}
 
 /* double **** cost_derivative(output_activations, y) {
   return (output_activations-y);
@@ -79,13 +111,13 @@ double ** feedforward(Network * net, int a) {
   return result;
 }
 
-/* void free_network(Network * net) {
+void free_network(Network * net) {
   int i = 0;
   int j = 0;
 
   free(net->sizes);
 
-  for (i = 0; i < 1; i++) {
+  /*for (i = 0; i < 1; i++) {
     for (j = 0; j < 1; j++) {
       free(net->biases[i][j]);
     }
@@ -96,17 +128,44 @@ double ** feedforward(Network * net, int a) {
   free(net->biases);
 
   for (i = 0; i < 1; i++) {
-    for (j = 0; j < 1; j++) {
+    for (j = 0; j < 2; j++) {
       free(net->weights[i][j]);
     }
 
     free(net->weights[i]);
   }
 
-  free(net->weights);
+  free(net->weights);*/
 
   free(net);
-} */
+}
+
+void free_nabla_tuple(nabla_tuple * tuple) {
+  int i = 0;
+  int j = 0;
+
+  for (i = 0; i < 2; i++) {
+    for (j = 0; j < 2; j++) {
+      free(tuple->nabla_b[i][j]);
+    }
+
+    free(tuple->nabla_b[i]);
+  }
+
+  free(tuple->nabla_b);
+
+  for (i = 0; i < 2; i++) {
+    for (j = 0; j < 2; j++) {
+      free(tuple->nabla_w[i][j]);
+    }
+
+    free(tuple->nabla_w[i]);
+  }
+
+  free(tuple->nabla_w);
+
+  free(tuple);
+}
 
 /* double *** setGradientVector(Network * net) {
   int i = 0;

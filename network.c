@@ -24,12 +24,25 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   int j = 0;
   int k = 0;
 
-  tuple->nabla_b = malloc(sizeof(double) * 2);
+  double ** activation = malloc(sizeof(double *));
+  activation[0] = malloc(sizeof(double));
 
-  for (i = 0; i < 2; i++) {
-    tuple->nabla_b[i] = malloc(sizeof(double) * 2);
+  double *** activations = malloc(sizeof(double *));
+  activations[0] = malloc(sizeof(double *));
+  activations[0][0] = malloc(sizeof(double));
+  double ** z = malloc(sizeof(double *));
+  z[0] = malloc(sizeof(double));
+  double ** zs = malloc(sizeof(int *));
+  zs[0] = malloc(sizeof(double));
+  double ** delta = malloc(sizeof(double *));
+  delta[0] = malloc(sizeof(double));
 
-    for (j = 0; j < 2; j++) {
+  tuple->nabla_b = malloc(sizeof(double *) * 1);
+
+  for (i = 0; i < 1; i++) {
+    tuple->nabla_b[i] = malloc(sizeof(double *) * 1);
+
+    for (j = 0; j < 1; j++) {
       tuple->nabla_b[i][j] = malloc(sizeof(double) * 1);
 
       for (k = 0; k < 1; k++) {
@@ -38,46 +51,73 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
     }
   }
 
-  tuple->nabla_w = malloc(sizeof(double) * 2);
+  tuple->nabla_w = malloc(sizeof(double *) * 1);
 
-  for (i = 0; i < 2; i++) {
-    tuple->nabla_w[i] = malloc(sizeof(double) * 2);
+  for (i = 0; i < 1; i++) {
+    tuple->nabla_w[i] = malloc(sizeof(double *) * 1);
 
-    for (j = 0; j < 2; j++) {
-      tuple->nabla_w[i][j] = malloc(sizeof(double) * 4);
+    for (j = 0; j < 1; j++) {
+      tuple->nabla_w[i][j] = malloc(sizeof(double) * 1);
 
-      for (k = 0; k < 4; k++) {
+      for (k = 0; k < 1; k++) {
         tuple->nabla_w[i][j][k] = 0.00;
       }
     }
   }
 
+  activation[0][0] = x[0][0];
+
+  activations[0][0][0] = x[0][0];
+
+  for (i = 0; i < 1; i++) {
+    z[0][0] = net->weights[0][0][0] * activation[0][0] + net->biases[0][0][0];
+    zs[0][0] = z[0][0];
+    activation[0][0] = sigmoid(z[0][0]);
+    activations[0][0][0] = activation[0][0];
+  }
+
+  delta[0][0] = (activations[0][0][0] - y[0][0]) * sigmoid_prime(zs[0][0]);
+  tuple->nabla_b[0][0][0] = delta[0][0];
+  tuple->nabla_w[0][0][0] = delta[0][0];
+
+  printf("%f\n", z[0][0]);
+  printf("activation: %f\n", activation[0][0]);
+  printf("delta: %f\n", delta[0][0]);
+
+  free_activation(activation);
+
+  free_activations(activations);
+  free_z(z);
+  free_zs(zs);
+  free_delta(delta);
+
   return tuple;
-  /*
-  activation = x;
-  activations = [x];
-  zs = [];
+}
 
-  for b, w in zip(net->biases, net->weights) {
-      z = np.dot(w, activation)+b
-      zs.append(z)
-      activation = sigmoid(z)
-      activations.append(activation);
-  }
+void free_activation(double ** activation) {
+  free(activation[0]);
+  free(activation);
+}
 
-  delta = cost_derivative(activations[-1], y) * sigmoid_prime(zs[-1]);
-  nabla_b[-1] = delta;
-  nabla_w[-1] = dot(delta, transpose(activations[-2]));
+void free_activations(double *** activations) {
+  free(activations[0][0]);
+  free(activations[0]);
+  free(activations);
+}
 
-  for l in xrange(2, net->numLayers) {
-    z = zs[-l];
-    sp = sigmoid_prime(z);
-    delta = np.dot(net->weights[-l+1].transpose(), delta) * sp;
-    nabla_b[-l] = delta;
-    nabla_w[-l] = np.dot(delta, activations[-l-1].transpose());
-  }
+void free_delta(double ** delta) {
+  free(delta[0]);
+  free(delta);
+}
 
-  return (nabla_b, nabla_w);*/
+void free_z(double ** z) {
+  free(z[0]);
+  free(z);
+}
+
+void free_zs(double ** zs) {
+  free(zs[0]);
+  free(zs);
 }
 
 /* double **** cost_derivative(output_activations, y) {
@@ -115,27 +155,27 @@ void free_network(Network * net) {
   int i = 0;
   int j = 0;
 
-  free(net->sizes);
-
-  /*for (i = 0; i < 1; i++) {
-    for (j = 0; j < 1; j++) {
-      free(net->biases[i][j]);
+  for (i = 1; i < net->numLayers; i++) {
+    for (j = 0; j < net->sizes[i]; j++) {
+      free(net->biases[i - 1][j]);
     }
 
-    free(net->biases[i]);
+    free(net->biases[i - 1]);
   }
 
   free(net->biases);
 
-  for (i = 0; i < 1; i++) {
-    for (j = 0; j < 2; j++) {
-      free(net->weights[i][j]);
+  for (i = 1; i < net->numLayers; i++) {
+    for (j = 0; j < net->numLayers - 1; j++) {
+      free(net->weights[i-1][j]);
     }
 
-    free(net->weights[i]);
+    free(net->weights[i - 1]);
   }
 
-  free(net->weights);*/
+  free(net->weights);
+
+  free(net->sizes);
 
   free(net);
 }
@@ -144,8 +184,8 @@ void free_nabla_tuple(nabla_tuple * tuple) {
   int i = 0;
   int j = 0;
 
-  for (i = 0; i < 2; i++) {
-    for (j = 0; j < 2; j++) {
+  for (i = 0; i < 1; i++) {
+    for (j = 0; j < 1; j++) {
       free(tuple->nabla_b[i][j]);
     }
 
@@ -154,8 +194,8 @@ void free_nabla_tuple(nabla_tuple * tuple) {
 
   free(tuple->nabla_b);
 
-  for (i = 0; i < 2; i++) {
-    for (j = 0; j < 2; j++) {
+  for (i = 0; i < 1; i++) {
+    for (j = 0; j < 1; j++) {
       free(tuple->nabla_w[i][j]);
     }
 

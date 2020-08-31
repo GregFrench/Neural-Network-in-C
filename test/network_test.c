@@ -203,13 +203,13 @@ static char * testCostDerivativeReturnsCorrectOutputForTwoOutputNeurons() {
     { 1 }
   };
 
-  double ** activations = malloc(sizeof(double *));
+  double ** activations = malloc(sizeof(double *) * num_output_neurons);
   activations[0] = malloc(sizeof(double));
   activations[1] = malloc(sizeof(double));
   activations[0][0] = activation_data[0][0];
   activations[1][0] = activation_data[1][0];
 
-  int ** y = malloc(sizeof(int *));
+  int ** y = malloc(sizeof(int *) * num_output_neurons);
   y[0] = malloc(sizeof(int));
   y[1] = malloc(sizeof(int));
   y[0][0] = y_data[0][0];

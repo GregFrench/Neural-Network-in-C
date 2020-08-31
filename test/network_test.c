@@ -222,7 +222,7 @@ static char * testCostDerivativeReturnsCorrectOutputForTwoOutputNeurons() {
 
   free_double_2d(output, num_output_neurons);
   free_double_2d(activations, num_output_neurons);
-  free_double_2d(y, num_output_neurons);
+  free_int_2d(y, num_output_neurons);
 
   return 0;
 }

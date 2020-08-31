@@ -32,6 +32,7 @@ void free_activation(double ** activation, int num);
 void free_activations(double *** activations);
 void free_delta(double ** delta);
 void free_double_2d(double ** arr, int num);
+void free_int_2d(int ** arr, int num);
 void free_z(double ** z);
 void free_zs(double ** zs);
 void free_network(Network * net);

@@ -167,6 +167,16 @@ void free_double_2d(double ** arr, int num) {
   free(arr);
 }
 
+void free_int_2d(int ** arr, int num) {
+  int i = 0;
+
+  for (i = 0; i < num; i++) {
+    free(arr[i]);
+  }
+
+  free(arr);
+}
+
 void free_network(Network * net) {
   int i = 0;
   int j = 0;

@@ -111,7 +111,7 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneElemen
   mu_assert("error, dot2D doesn't return correct output for output[0][0]", is_approx(output[0][0], -0.1382643) == 1);
 
   free_weights(weights_data, sizes, size);
-  free_activation(activation, 1 ,1);
+  free_activation(activation, 1);
   free(output[0]);
   free(output);
 
@@ -151,7 +151,7 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithTwoElemen
   mu_assert("dot2D test #2: error, dot2D doesn't return correct output for output[1][0]", is_approx(output[1][0], -0.70242729) == 1);
 
   free_weights(weights_data, sizes, size);
-  free_activation(activation, 2, 2);
+  free_activation(activation, 2);
   free(output[0]);
   free(output[1]);
   free(output);
@@ -183,7 +183,7 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneAndTwo
   free(w[0]);
   free(w[1]);
   free(w);
-  free_activation(activation, 1, 1);
+  free_activation(activation, 1);
   free(output[0]);
   free(output[1]);
   free(output);

@@ -80,12 +80,7 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   tuple->nabla_b[0][0][0] = delta[0][0];
   tuple->nabla_w[0][0][0] = delta[0][0];
 
-  printf("%f\n", z[0][0]);
-  printf("activation: %f\n", activation[0][0]);
-  printf("delta: %f\n", delta[0][0]);
-
-  free_activation(activation);
-
+  free_activation(activation, 1, 1);
   free_activations(activations);
   free_z(z);
   free_zs(zs);
@@ -94,8 +89,13 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   return tuple;
 }
 
-void free_activation(double ** activation) {
-  free(activation[0]);
+void free_activation(double ** activation, int m, int n) {
+  int i, j = 0;
+
+  for (i = 0; i < m; i++) {
+    free(activation[i]);
+  }
+
   free(activation);
 }
 
@@ -165,15 +165,7 @@ void free_network(Network * net) {
 
   free(net->biases);
 
-  for (i = 1; i < net->numLayers; i++) {
-    for (j = 0; j < net->numLayers - 1; j++) {
-      free(net->weights[i-1][j]);
-    }
-
-    free(net->weights[i - 1]);
-  }
-
-  free(net->weights);
+  free_weights(net->weights, net->sizes, net->numLayers);
 
   free(net->sizes);
 
@@ -205,6 +197,20 @@ void free_nabla_tuple(nabla_tuple * tuple) {
   free(tuple->nabla_w);
 
   free(tuple);
+}
+
+void free_weights(double *** weights, int sizes[], int numLayers) {
+  int i, j = 0;
+
+  for (i = 1; i < numLayers; i++) {
+    for (j = 0; j < sizes[i]; j++) {
+      free(weights[i-1][j]);
+    }
+
+    free(weights[i - 1]);
+  }
+
+  free(weights);
 }
 
 /* double *** setGradientVector(Network * net) {

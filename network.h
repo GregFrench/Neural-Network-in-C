@@ -27,13 +27,14 @@ mnist_data * mnist_loader(char * type);
 Network * init(int sizes[], int size);
 nabla_tuple * backprop(Network * net, int ** x, int ** y);
 double ** feedforward(Network * net, int a);
-void free_activation(double ** activation);
+void free_activation(double ** activation, int m, int n);
 void free_activations(double *** activations);
 void free_delta(double ** delta);
 void free_z(double ** z);
 void free_zs(double ** zs);
 void free_network(Network * net);
 void free_nabla_tuple(nabla_tuple * tuple);
+void free_weights(double *** weights, int sizes[], int numLayers);
 void sgd(Network * net, mnist_data * trainingData, int trainingDataSize, int epochs, int miniBatchSize, double eta, mnist_data * testData, int testDataSize);
 void update_mini_batch(Network * net, double **** mini_batch, double eta);
 

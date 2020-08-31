@@ -30,6 +30,26 @@ int is_approx(double x, double y) {
   return fabs(x - y) < EPSILON;
 }
 
+double ** dot2D(double ** matrix, double ** matrix2, int m, int n) {
+  double ** result = malloc(sizeof(double *) * m);
+  int i = 0;
+  int j = 0;
+  double sum = 0;
+
+  for (i = 0; i < m; i++) {
+    sum = 0;
+    result[i] = malloc(sizeof(double) * n);
+
+    for (j = 0; j < n; j++) {
+      sum += (matrix[i][j] * matrix2[j][0]);
+    }
+
+    result[i][0] = sum;
+  }
+
+  return result;
+}
+
 double ** dotMatrixByScalar(double ** matrix, int scalar) {
   double ** result = malloc(sizeof(double) * 2);
   int i = 0;
@@ -42,8 +62,6 @@ double ** dotMatrixByScalar(double ** matrix, int scalar) {
       result[i][j] = matrix[i][j] * scalar;
     }
   }
-
-
 
   return result;
 }

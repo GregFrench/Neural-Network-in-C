@@ -122,10 +122,6 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithTwoElemen
   double ** output;
   int sizes[] = {2, 2};
   int size = 2;
-  double biases[] = {
-    0.49671415,
-    -0.1382643
-  };
 
   double weights[] = {
     0.64768854,
@@ -137,11 +133,6 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithTwoElemen
   int x_data[][1] = {
     { 1 },
     { 2 }
-  };
-
-  int y_data[][1] = {
-    { 0 },
-    { 1 }
   };
 
   double *** weights_data = set_test_weights(weights, sizes, size);

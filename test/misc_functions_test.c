@@ -180,13 +180,74 @@ static char * testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneAndTwo
   mu_assert("dot2D test #3: error, dot2D doesn't return correct output for output[0][0]", is_approx(output[0][0], -0.17365489) == 1);
   mu_assert("dot2D test #3: error, dot2D doesn't return correct output for output[1][0]", is_approx(output[1][0], 1.17127188) == 1);
 
-  free(w[0]);
-  free(w[1]);
-  free(w);
+  free_double_2d(w, 2);
   free_activation(activation, 1);
-  free(output[0]);
-  free(output[1]);
-  free(output);
+  free_double_2d(output, 2);
+  return 0;
+}
+
+static char * testTransposeExecutesTransposeOnOneByOne2DMatrixAndReturnsCorrectOutput() {
+  double ** output;
+  double ** matrix;
+  int m = 1;
+  int n = 1;
+
+  matrix = malloc(sizeof(double *) * m);
+  matrix[0] = malloc(sizeof(double) * n);
+  matrix[0][0] = 2.00;
+  
+  output = transpose(matrix, m, n);
+
+  mu_assert("transpose test #1: error, transpose doesn't return correct output for output[0][0]", is_approx(output[0][0], 2.00) == 1);
+
+  free_double_2d(matrix, m);
+  free_double_2d(output, n);
+  return 0;
+}
+
+static char * testTransposeExecutesTransposeOnTwoByOne2dDoubleMatrixAndReturnsCorrectOutput() {
+  double ** output;
+  double ** matrix;
+  int m = 2;
+  int n = 1;
+
+  matrix = create_double_matrix(m, n);
+
+  matrix[0][0] = 2.00;
+  matrix[1][0] = 3.00;
+  
+  output = transpose(matrix, m, n);
+
+  mu_assert("transpose test #2: error, transpose doesn't return correct output for output[0][0]", is_approx(output[0][0], 2.00) == 1);
+  mu_assert("transpose test #2: error, transpose doesn't return correct output for output[0][1]", is_approx(output[0][1], 3.00) == 1);
+
+  free_double_2d(matrix, m);
+  free_double_2d(output, n);
+  return 0;
+}
+
+static char * testTransposeExecutesTransposeOnTwoByTwo2dDoubleMatrixAndReturnsCorrectOutput() {
+  double ** output;
+  double ** matrix;
+  int m = 2;
+  int n = 2;
+
+  matrix = create_double_matrix(m, n);
+
+  matrix[0][0] = 1.00;
+  matrix[0][1] = 2.00;
+  matrix[1][0] = 3.00;
+  matrix[1][1] = 4.00;
+  
+  output = transpose(matrix, m, n);
+
+  mu_assert("transpose test #3: error, transpose doesn't return correct output for output[0][0]", is_approx(output[0][0], 1.00) == 1);
+  mu_assert("transpose test #3: error, transpose doesn't return correct output for output[0][1]", is_approx(output[0][1], 3.00) == 1);
+  mu_assert("transpose test #3: error, transpose doesn't return correct output for output[1][0]", is_approx(output[1][0], 2.00) == 1);
+  mu_assert("transpose test #3: error, transpose doesn't return correct output for output[1][1]", is_approx(output[1][1], 4.00) == 1);
+
+  free_double_2d(matrix, m);
+  free_double_2d(output, n);
   return 0;
 }
 
@@ -195,6 +256,10 @@ static char * all_tests() {
   mu_run_test(testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneElementEachAndReturnsCorrectOutput);
   mu_run_test(testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithTwoElementsEachAndReturnsCorrectOutput);
   mu_run_test(testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneAndTwoElementsEachAndReturnsCorrectOutput);
+  mu_run_test(testTransposeExecutesTransposeOnOneByOne2DMatrixAndReturnsCorrectOutput);
+  mu_run_test(testTransposeExecutesTransposeOnTwoByOne2dDoubleMatrixAndReturnsCorrectOutput);
+  mu_run_test(testTransposeExecutesTransposeOnTwoByTwo2dDoubleMatrixAndReturnsCorrectOutput);
+
   return 0;
 }
 

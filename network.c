@@ -29,10 +29,8 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
 
   double *** activations = malloc(sizeof(double *) * (net->numLayers - 1));
   double ** z;
-  double ** zs = malloc(sizeof(int *));
-  zs[0] = malloc(sizeof(double));
-  double ** delta = malloc(sizeof(double *));
-  delta[0] = malloc(sizeof(double));
+  double ** zs = malloc(sizeof(double *) * (net->numLayers - 1));
+  double ** delta;
 
   tuple->nabla_b = malloc(sizeof(double *) * 1);
 
@@ -67,16 +65,30 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   for (i = 0; i < net->numLayers - 1; i++) {
     z = dot2D(net->weights[i], activation, 1, 1);
     z[0][0] += net->biases[i][0][0];
-    zs[0][0] = z[0][0];
+    zs[i] = malloc(sizeof(double));
+    zs[i][0] = z[0][0];
     activation[0][0] = sigmoid(z[0][0]);
     activations[i] = activation;
 
     printf("activations: %f\n", activations[i][0][0]);
   }
 
-  delta[0][0] = (activations[0][0][0] - y[0][0]) * sigmoid_prime(zs[0][0]);
+  /*delta[0][0] = (activations[0][0][0] - y[0][0]) * sigmoid_prime(zs[0][0]);*/
+  delta = cost_derivative(activations[i - 1], y, net->sizes[net->numLayers - 1]);
+  for (i = 0; i < net->sizes[net->numLayers - 1]; i++) {
+    printf("cost[%d][0]: %f\n", i, delta[i][0]);
+    printf("zs[%d][0]: %f\n", net->numLayers - 2, zs[net->numLayers - 2][0]);
+    printf("sigmoid_prime(zs[%d][0]): %f\n", net->numLayers - 2, sigmoid_prime(zs[net->numLayers - 2][0]));
+    delta[i][0] *= sigmoid_prime(zs[net->numLayers - 2][0]);
+    printf("delta[%d][0]: %f\n", i, delta[i][0]);
+  }
+
   tuple->nabla_b[0][0][0] = delta[0][0];
   tuple->nabla_w[0][0][0] = delta[0][0];
+
+  for (i = 2; i < net->numLayers; i++) {
+
+  }
 
   free_activation(activation, 1);
   free(activations);

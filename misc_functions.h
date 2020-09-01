@@ -4,6 +4,7 @@
 #define PI 3.14159265358979323846
 
 double box_muller();
+double ** create_double_matrix(int m, int n);
 double ** dot2D(double ** matrix, double ** matrix2, int m, int n);
 double ** dotMatrixByScalar(double ** matrix, int scalar);
 int is_approx(double x, double y);
@@ -15,3 +16,4 @@ double *** set_weights(int sizes[], int size);
 void shuffle(double **** array, size_t n);
 double sigmoid(double z);
 double sigmoid_prime(double z);
+double ** transpose(double ** matrix, int m, int n);

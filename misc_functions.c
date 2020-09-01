@@ -26,6 +26,21 @@ double box_muller() {
   return n1;
 }
 
+double ** create_double_matrix(int m, int n) {
+  int i, j = 0;
+  double ** matrix = malloc(sizeof(double *) * m);
+
+  for (i = 0; i < m; i++) {
+    matrix[i] = malloc(sizeof(double) * n);
+
+    for (j = 0; j < n; j++) {
+      matrix[i][j] = 0.00;
+    }
+  }
+
+  return matrix;
+}
+
 int is_approx(double x, double y) {
   return fabs(x - y) < EPSILON;
 }
@@ -157,4 +172,17 @@ double sigmoid(double z) {
 /* Derivative of the sigmoid function */
 double sigmoid_prime(double z) {
   return sigmoid(z) * (1 - sigmoid(z));
+}
+
+double ** transpose(double ** matrix, int m, int n) {
+  int i, j = 0;
+  double ** result = create_double_matrix(n, m);
+
+  for (i = 0; i < m; i++) {
+    for (j = 0; j < n; j++) {
+      result[j][i] = matrix[i][j];
+    }
+  }
+
+  return result;
 }

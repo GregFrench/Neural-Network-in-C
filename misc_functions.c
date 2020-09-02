@@ -182,10 +182,6 @@ double ** sigmoid_prime(double ** z, int m) {
   return arr;
 }
 
-/*double sigmoid_prime(double z) {
-  return sigmoid(z) * (1 - sigmoid(z));
-}*/
-
 double ** transpose(double ** matrix, int m, int n) {
   int i, j = 0;
   double ** result = create_double_matrix(n, m);

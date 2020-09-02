@@ -1,4 +1,4 @@
-<p align="center"><img width="100" src="./Brain.jpg" alt="Brain"></p>
+<p align="center"><img width="100" src="./img/Brain.jpg" alt="Brain"></p>
 
 # Neural-Network-in-C
 

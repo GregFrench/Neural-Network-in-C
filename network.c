@@ -20,74 +20,48 @@ Network * init(int sizes[], int size) {
 
 nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   nabla_tuple * tuple = malloc(sizeof(nabla_tuple));
-  int i = 0;
-  int j = 0;
-  int k = 0;
-
+  int i, j = 0;
   double ** activation = malloc(sizeof(double *));
+  double *** activations = malloc(sizeof(double *) * (net->numLayers - 1));
+  double *** zs = malloc(sizeof(double *) * (net->numLayers - 1));
+  double ** z;
+  double ** delta;
+  double ** sp;
+
   activation[0] = malloc(sizeof(double));
 
-  double *** activations = malloc(sizeof(double *) * (net->numLayers - 1));
-  double ** z;
-  double ** zs = malloc(sizeof(double *) * (net->numLayers - 1));
-  double ** delta;
-
-  tuple->nabla_b = malloc(sizeof(double *) * 1);
-
-  for (i = 0; i < 1; i++) {
-    tuple->nabla_b[i] = malloc(sizeof(double *) * 1);
-
-    for (j = 0; j < 1; j++) {
-      tuple->nabla_b[i][j] = malloc(sizeof(double) * 1);
-
-      for (k = 0; k < 1; k++) {
-        tuple->nabla_b[i][j][k] = 0.00;
-      }
-    }
-  }
-
-  tuple->nabla_w = malloc(sizeof(double *) * 1);
-
-  for (i = 0; i < 1; i++) {
-    tuple->nabla_w[i] = malloc(sizeof(double *) * 1);
-
-    for (j = 0; j < 1; j++) {
-      tuple->nabla_w[i][j] = malloc(sizeof(double) * 1);
-
-      for (k = 0; k < 1; k++) {
-        tuple->nabla_w[i][j][k] = 0.00;
-      }
-    }
-  }
+  tuple->nabla_b = create_nabla();
+  tuple->nabla_w = create_nabla();
 
   activation[0][0] = x[0][0];
 
   for (i = 0; i < net->numLayers - 1; i++) {
     z = dot2D(net->weights[i], activation, 1, 1);
     z[0][0] += net->biases[i][0][0];
-    zs[i] = malloc(sizeof(double));
-    zs[i][0] = z[0][0];
+    zs[i] = malloc(sizeof(double *));
+    zs[i] = z;
     activation[0][0] = sigmoid(z[0][0]);
     activations[i] = activation;
-
-    printf("activations: %f\n", activations[i][0][0]);
   }
 
-  /*delta[0][0] = (activations[0][0][0] - y[0][0]) * sigmoid_prime(zs[0][0]);*/
   delta = cost_derivative(activations[i - 1], y, net->sizes[net->numLayers - 1]);
   for (i = 0; i < net->sizes[net->numLayers - 1]; i++) {
-    printf("cost[%d][0]: %f\n", i, delta[i][0]);
-    printf("zs[%d][0]: %f\n", net->numLayers - 2, zs[net->numLayers - 2][0]);
-    printf("sigmoid_prime(zs[%d][0]): %f\n", net->numLayers - 2, sigmoid_prime(zs[net->numLayers - 2][0]));
-    delta[i][0] *= sigmoid_prime(zs[net->numLayers - 2][0]);
-    printf("delta[%d][0]: %f\n", i, delta[i][0]);
+    delta[i][0] *= sigmoid_prime(zs[net->numLayers - 2], 1)[0][0];
   }
 
-  tuple->nabla_b[0][0][0] = delta[0][0];
+  tuple->nabla_b[0] = delta;
   tuple->nabla_w[0][0][0] = delta[0][0];
 
   for (i = 2; i < net->numLayers; i++) {
+    z = zs[net->numLayers - i - 1];
+    sp = sigmoid_prime(z, 1);
+    delta = dot2D(transpose(net->weights[net->numLayers - i], 1, 1), delta, 1, 1);
 
+    for (j = 0; j < net->sizes[net->numLayers - 1]; j++) {
+      delta[0][0] *= sp[0][0];
+    }
+
+    tuple->nabla_b[net->numLayers - i] = delta;
   }
 
   free_activation(activation, 1);
@@ -97,6 +71,27 @@ nabla_tuple * backprop(Network * net, int ** x, int ** y) {
   free_delta(delta);
 
   return tuple;
+}
+
+double *** create_nabla() {
+  int i, j, k = 0;
+  double *** nabla;
+
+  nabla = malloc(sizeof(double *) * 1);
+
+  for (i = 0; i < 1; i++) {
+    nabla[i] = malloc(sizeof(double *) * 1);
+
+    for (j = 0; j < 1; j++) {
+      nabla[i][j] = malloc(sizeof(double) * 1);
+
+      for (k = 0; k < 1; k++) {
+        nabla[i][j][k] = 0.00;
+      }
+    }
+  }
+
+  return nabla;
 }
 
 void free_activation(double ** activation, int num) {
@@ -141,13 +136,6 @@ double ** cost_derivative(double ** output_activations, int ** y, int output_siz
 
   return cost;
 }
-
-/* int evaluate(double **** test_data) {
-  test_results = [(np.argmax(self.feedforward(x)), y) for (x, y) in test_data];
-  return sum(int(x == y) for (x, y) in test_results);
-
-  return 0;
-} */
 
 double ** feedforward(Network * net, int a) {
   double ** result = malloc(sizeof(double) * 4);
@@ -251,7 +239,7 @@ void free_weights(double *** weights, int sizes[], int numLayers) {
   free(weights);
 }
 
-/* double *** setGradientVector(Network * net) {
+double *** setGradientVector(Network * net) {
   int i = 0;
   int j = 0;
   double *** nabla = NULL;
@@ -268,10 +256,10 @@ void free_weights(double *** weights, int sizes[], int numLayers) {
   }
 
   return nabla;
-} */
+}
 
 void sgd(Network * net, mnist_data * trainingData, int trainingDataSize, int epochs, int miniBatchSize, double eta, mnist_data * testData, int testDataSize) {
-  /*int n = trainingDataSize;
+  int n = trainingDataSize;
   int nTest = testDataSize;
   int numMiniBatches = 0;
   double ***** miniBatches;
@@ -307,33 +295,5 @@ void sgd(Network * net, mnist_data * trainingData, int trainingDataSize, int epo
     } else {
       printf("Epoch %d complete", j);
     }
-  }*/
-}
-
-void update_mini_batch(Network * net, double **** miniBatch, double eta) {
-  /*double *** nablaB = NULL;
-  double *** nablaW = NULL;
-  double *** x = NULL;
-  double *** y = NULL;
-  int i = 0;
-  int j = 0;
-
-  nablaB = setGradientVector(net);
-  nablaW = setGradientVector(net);
-
-  for (i = 0; i < net->miniBatchSize; i++) {
-    x = miniBatch[0];
-    y = miniBatch[0];
   }
-
-  for x, y in miniBatch {
-    delta_nabla_b, delta_nabla_w = backprop(x, y);
-    nablaB = [nb+dnb for nb, dnb in zip(nablaB, delta_nabla_b)];
-    nablaW = [nw+dnw for nw, dnw in zip(nablaW, delta_nabla_w)];
-  }
-
-  net->weights = [w-(eta/len(miniBatch))*nw for w, nw in zip(net->weights, nablaW)]
-  net->biases = [b-(eta/len(miniBatch))*nb for b, nb in zip(net->biases, nablaB)]*/
-
-  return;
 }

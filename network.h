@@ -27,6 +27,7 @@ mnist_data * mnist_loader(char * type);
 Network * init(int sizes[], int size);
 nabla_tuple * backprop(Network * net, int ** x, int ** y);
 double ** cost_derivative(double ** output_activations, int ** y, int output_size);
+double *** create_nabla();
 double ** feedforward(Network * net, int a);
 void free_activation(double ** activation, int num);
 void free_activations(double *** activations);

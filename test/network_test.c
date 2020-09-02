@@ -9,7 +9,7 @@
 
 int tests_run = 0;
 
-/*static char * testFeedForwardReturnsCorrectOutput() {
+static char * testFeedForwardReturnsCorrectOutput() {
   Network * net = malloc(sizeof(Network));
   double ** output;
   int sizes[] = {2, 2};
@@ -39,7 +39,7 @@ int tests_run = 0;
 
   free_network(net);
   return 0;
-}*/
+}
 
 static char * testBackpropReturnsCorrectOutputForOneInputNeuronAndOneOutputNeuron() {
   Network * net = malloc(sizeof(Network));
@@ -86,17 +86,14 @@ static char * testBackpropReturnsCorrectOutputForOneInputNeuronAndOneOutputNeuro
   free_network(net);
   free_nabla_tuple(output);
 
-  free(x[0]);
-  free(x);
-
-  free(y[0]);
-  free(y);
+  free_int_2d(x, 1);
+  free_int_2d(y, 1);
 
   return 0;
 }
 
 static char * testBackpropReturnsCorrectOutputForOneInputNeuronOneHiddenNeuronAndOneOutputNeuron() {
-  /*Network * net = malloc(sizeof(Network));
+  Network * net = malloc(sizeof(Network));
   nabla_tuple * output;
   int sizes[] = {1, 1, 1};
   int size = 3;
@@ -148,7 +145,7 @@ static char * testBackpropReturnsCorrectOutputForOneInputNeuronOneHiddenNeuronAn
   free(x);
 
   free(y[0]);
-  free(y);*/
+  free(y);
 
   return 0;
 }
@@ -228,7 +225,7 @@ static char * testCostDerivativeReturnsCorrectOutputForTwoOutputNeurons() {
 }
 
 static char * testBackpropReturnsCorrectOutput() {
-  /*Network * net = malloc(sizeof(Network));
+  Network * net = malloc(sizeof(Network));
   nabla_tuple * output;
   int sizes[] = {4, 2, 2};
   int size = 3;
@@ -271,18 +268,18 @@ static char * testBackpropReturnsCorrectOutput() {
   free_nabla_tuple(output);
 
   free(x);
-  free(y);*/
+  free(y);
   return 0;
 }
 
 static char * all_tests() {
-  /*mu_run_test(testFeedForwardReturnsCorrectOutput);*/
+  mu_run_test(testFeedForwardReturnsCorrectOutput);
   mu_run_test(testBackpropReturnsCorrectOutputForOneInputNeuronAndOneOutputNeuron);
   mu_run_test(testBackpropReturnsCorrectOutputForOneInputNeuronOneHiddenNeuronAndOneOutputNeuron);
   mu_run_test(testCostDerivativeReturnsCorrectOutputForOneOutputNeuron);
   mu_run_test(testCostDerivativeReturnsCorrectOutputForTwoOutputNeurons);
 
-  /*mu_run_test(testBackpropReturnsCorrectOutput);*/
+  mu_run_test(testBackpropReturnsCorrectOutput);
 
   return 0;
 }

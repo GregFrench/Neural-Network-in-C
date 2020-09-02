@@ -170,9 +170,21 @@ double sigmoid(double z) {
 }
 
 /* Derivative of the sigmoid function */
-double sigmoid_prime(double z) {
-  return sigmoid(z) * (1 - sigmoid(z));
+double ** sigmoid_prime(double ** z, int m) {
+  int i = 0;
+  double ** arr = malloc(sizeof(double *) * m);
+
+  for (i = 0; i < m; i++) {
+    arr[i] = malloc(sizeof(double));
+    arr[i][0] = sigmoid(z[i][0]) * (1 - sigmoid(z[i][0]));
+  }
+
+  return arr;
 }
+
+/*double sigmoid_prime(double z) {
+  return sigmoid(z) * (1 - sigmoid(z));
+}*/
 
 double ** transpose(double ** matrix, int m, int n) {
   int i, j = 0;

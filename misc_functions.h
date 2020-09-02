@@ -15,5 +15,5 @@ double *** set_biases(int sizes[], int size);
 double *** set_weights(int sizes[], int size);
 void shuffle(double **** array, size_t n);
 double sigmoid(double z);
-double sigmoid_prime(double z);
+double ** sigmoid_prime(double ** z, int m);
 double ** transpose(double ** matrix, int m, int n);

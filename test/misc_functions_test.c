@@ -251,6 +251,47 @@ static char * testTransposeExecutesTransposeOnTwoByTwo2dDoubleMatrixAndReturnsCo
   return 0;
 }
 
+static char * testSigmoidPrimeOnOneByOneDoubleMatrixAndReturnsCorrectOutput() {
+  double ** output;
+  double ** matrix;
+  int m = 1;
+  int n = 1;
+
+  matrix = create_double_matrix(m, n);
+
+  matrix[0][0] = 1.01693414;
+
+  output = sigmoid_prime(matrix, m);
+
+  mu_assert("sigmoid_prime test #1: error, sigmoid_prime doesn't return correct output for output[0][0]", is_approx(output[0][0], 0.19506837) == 1);
+
+  free_double_2d(matrix, m);
+  free_double_2d(output, m);
+  return 0;
+}
+
+static char * testSigmoidPrimeOnTwoByOneDoubleMatrixAndReturnsCorrectOutput() {
+  double ** output;
+  double ** matrix;
+  int m = 2;
+  int n = 1;
+
+  matrix = create_double_matrix(m, n);
+
+  matrix[0][0] = -0.34498767;
+  matrix[1][0] = 0.44097966;
+
+  output = sigmoid_prime(matrix, m);
+
+  mu_assert("sigmoid_prime test #2: error, sigmoid_prime doesn't return correct output for output[0][0]", is_approx(output[0][0], 0.24270657) == 1);
+  mu_assert("sigmoid_prime test #2: error, sigmoid_prime doesn't return correct output for output[1][0]", is_approx(output[1][0], 0.23822939) == 1);
+
+  free_double_2d(matrix, m);
+  free_double_2d(output, m);
+
+  return 0;
+}
+
 static char * all_tests() {
   mu_run_test(testDotMatrixByScalarCalculatesDotProductMultiplyingMatrixValuesByScalarAndReturnsCorrectOutput);
   mu_run_test(testDot2DCalculatesDotProductMultiplyingTwo2DMatricesWithOneElementEachAndReturnsCorrectOutput);
@@ -259,6 +300,8 @@ static char * all_tests() {
   mu_run_test(testTransposeExecutesTransposeOnOneByOne2DMatrixAndReturnsCorrectOutput);
   mu_run_test(testTransposeExecutesTransposeOnTwoByOne2dDoubleMatrixAndReturnsCorrectOutput);
   mu_run_test(testTransposeExecutesTransposeOnTwoByTwo2dDoubleMatrixAndReturnsCorrectOutput);
+  mu_run_test(testSigmoidPrimeOnOneByOneDoubleMatrixAndReturnsCorrectOutput);
+  mu_run_test(testSigmoidPrimeOnTwoByOneDoubleMatrixAndReturnsCorrectOutput);
 
   return 0;
 }
